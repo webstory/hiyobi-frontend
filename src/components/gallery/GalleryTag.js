@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { NavLink } from "react-router-dom";
 
 const GalleryTag = (props) => {
   let href = props.value;
@@ -30,11 +29,6 @@ const GalleryTag = (props) => {
     return null;
   }
 };
-/*
-GalleryTag.defaultProps = {
-
-}
-*/
 
 const Tag = styled.a`
   background: #999;

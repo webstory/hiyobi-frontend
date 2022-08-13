@@ -1,14 +1,7 @@
 module.exports = {
   "extends": [
-    "react-app",
-    "plugin:prettier/recommended"
+    "react-app"
   ],
   rules: {
-        'prettier/prettier': [
-            'error',
-            {
-                endOfLine: 'auto',
-            },
-        ],
-    },
+  },
 }

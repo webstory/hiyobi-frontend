@@ -4,11 +4,8 @@ import GalleryTag from "./GalleryTag";
 import Cookie from "js-cookie";
 import { GetGalleryListJson } from "../../lib/Gallery";
 import Skeleton from "react-loading-skeleton";
-import { getGalleryBlock, getGalleryBlockType } from "../../lib/Setting";
-import { Tooltip, UncontrolledTooltip } from "reactstrap";
-import GalleryComment from "./GalleryComment";
 import GalleryDownloader from "./GalleryDownloader";
-import { CDNURL } from "../../lib/Constants";
+import { TNURL } from "../../lib/Constants";
 
 const GalleryBlock = (props) => {
   let data = props.data;
@@ -18,7 +15,6 @@ const GalleryBlock = (props) => {
   const [downloadOpen, setDownloadOpen] = useState(false);
 
   let isBlur = "";
-  let blocked = getGalleryBlock();
 
   useEffect(() => {
     async function getPage() {
@@ -33,40 +29,6 @@ const GalleryBlock = (props) => {
       getPage();
     }
   }, [data, props.dummy]);
-
-  if (typeof data !== "undefined") {
-    let artists = props.data.artists.map((val) => {
-      return { value: "artist:" + val.value };
-    });
-    let groups = props.data.groups.map((val) => {
-      return { value: "group:" + val.value };
-    });
-    let blocktmp = [...props.data.tags, ...artists, ...groups];
-    for (let i in blocktmp) {
-      let tag = blocktmp[i];
-
-      if (Cookie.get("blblur") === "true") {
-        if (tag.value === "male:yaoi" || tag.value === "male:males only") {
-          isBlur = " censoredImage";
-        }
-      }
-      if (typeof blocked !== "undefined") {
-        let block = blocked.split("|");
-        for (let j in block) {
-          if (
-            tag.value === block[j].replace(/_/gi, " ") ||
-            tag.display === block[j].replace(/_/gi, " ")
-          ) {
-            if (getGalleryBlockType() === "delete") {
-              return null;
-            } else {
-              isBlur = " censoredImage";
-            }
-          }
-        }
-      }
-    }
-  }
 
   if (typeof data === "undefined") {
     return (
@@ -137,10 +99,11 @@ const GalleryBlock = (props) => {
           <img
             className="galleryimg"
             alt="갤러리 썸네일"
+            crossorigin="anonymous"
             src={
               props.thumbnail
                 ? `data:image/png;base64, ${props.thumbnail}`
-                : `${CDNURL}/tn/${data.id}.jpg`
+                : `${TNURL}/tn/${data.id}.jpg`
             }
           />
         </a>
@@ -281,9 +244,7 @@ const GalleryBlock = (props) => {
             borderTop: isCommentOpen && "1px black solid",
             padding: isCommentOpen && 5,
           }}
-        >
-          {isCommentOpen === true && <GalleryComment id={data.id} />}
-        </div>
+        ></div>
       </GalleryContent>
     );
   }

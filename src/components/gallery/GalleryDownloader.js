@@ -40,10 +40,10 @@ const GalleryDownloader = (props) => {
 
       for (let i in list) {
         let file = await blobfetch({
-          url: `${CDNURL}/data/${info.id}/${list[i].name}`,
+          url: `${CDNURL}/data/${info.id}/${list[i].hash}.webp`,
           method: "GET",
         });
-        zip.file(list[i].name, file);
+        zip.file(list[i].hash + '.webp', file);
         setProgress(Number(i) + 1);
       }
 

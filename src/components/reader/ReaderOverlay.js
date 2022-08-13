@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
-import Cookie from "js-cookie";
-import { isMobile, MobileView } from "react-device-detect";
-import { isLogined, setBookmark } from "../../lib/User";
+import styled from "styled-components";
 import {
   DropdownItem,
-  Dropdown,
   DropdownMenu,
   UncontrolledDropdown,
   DropdownToggle,
-  Input,
-  FormGroup,
   Form,
 } from "reactstrap";
-import ModalPortal from "../modal/ModalPortal";
-import Login from "../modal/Login";
 
 const ReaderOverlay = (props) => {
   const {
@@ -34,21 +26,10 @@ const ReaderOverlay = (props) => {
   const [imgFit, setImgFit] = useState(props.imgFit);
   const [spread, setSpread] = useState(props.spread);
   const [viewMode, setViewMode] = useState(props.viewMode);
-  const [isLoginOpen, setLoginOpen] = useState(false);
 
   const toggleOverlay = () => {
     onChangeOpen(!isOverlayOpen);
     setOverlayOpen((prev) => !prev);
-  };
-
-  const onClickBookmark = () => {
-    if (!isLogined()) {
-      alert("로그인이 필요합니다.");
-      setLoginOpen(true);
-      return;
-    }
-
-    setBookmark({ galleryid: info.id });
   };
 
   let pageoption = props.list.map((val, i) => (
@@ -104,9 +85,6 @@ const ReaderOverlay = (props) => {
           <IconBtn onClick={onClickFull}>
             <span className="oi oi-fullscreen-enter" />
           </IconBtn>
-          <IconBtn onClick={onClickBookmark} target="_blank">
-            <span className="oi oi-bookmark" />
-          </IconBtn>
         </div>
       </HeadStyle>
       <OverlayBody
@@ -147,42 +125,32 @@ const ReaderOverlay = (props) => {
             {imgFit === "height" && <span className={`oi oi-resize-height`} />}
             {imgFit === "original" && <span className={`oi oi-resize-both`} />}
           </IconBtn>
-          <MobileView>
-            <UncontrolledDropdown>
-              <DropdownToggle
-                tag="p"
-                style={{
-                  color: "black",
-                  width: 45,
-                  height: 45,
-                  margin: 0,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <span className="oi oi-aperture" />
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem onClick={onClickImageQuality}>
-                  절약 화질 {imgQuality && <span className="oi oi-check" />}
-                </DropdownItem>
-                <DropdownItem onClick={onClickImageQuality}>
-                  원본 화질 {!imgQuality && <span className="oi oi-check" />}
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          </MobileView>
+          <UncontrolledDropdown>
+            <DropdownToggle
+              tag="p"
+              style={{
+                color: "black",
+                width: 45,
+                height: 45,
+                margin: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <span className="oi oi-aperture" />
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={onClickImageQuality}>
+                절약 화질 {imgQuality && <span className="oi oi-check" />}
+              </DropdownItem>
+              <DropdownItem onClick={onClickImageQuality}>
+                원본 화질 {!imgQuality && <span className="oi oi-check" />}
+              </DropdownItem>
+            </DropdownMenu>
+          </UncontrolledDropdown>
         </div>
       </FootStyle>
-      <ModalPortal>
-        <Login
-          isOpen={isLoginOpen}
-          onChange={(e) => {
-            setLoginOpen(e);
-          }}
-        />
-      </ModalPortal>
     </>
   );
 };

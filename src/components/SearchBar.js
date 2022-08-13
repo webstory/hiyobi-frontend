@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { getAutoComplete } from "../lib/AutoComplete";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { setBookmark } from "../lib/User";
 import Tags from "@yaireo/tagify/dist/react.tagify";
 import "@yaireo/tagify/dist/tagify.css";
 
@@ -36,17 +35,6 @@ const SearchBar = ({ search }) => {
   const onClickSearch = () => {
     let searchstr = savedTags.join("|");
     history.push(`/search/${searchstr}`);
-  };
-
-  const addBookmark = async () => {
-    if (typeof params.searchstr === "undefined" || params.searchstr === "") {
-      alert("검색을 진행해주세요");
-      return;
-    }
-    let result = await setBookmark({ search: params.searchstr });
-    if (result === true) {
-      alert("추가되었습니다.");
-    }
   };
 
   const transformTag = (tag) => {
@@ -95,9 +83,6 @@ const SearchBar = ({ search }) => {
       />
       <Button onClick={onClickSearch} outline>
         검색
-      </Button>
-      <Button onClick={addBookmark} color="success" outline>
-        북마크
       </Button>
     </BarArea>
   );

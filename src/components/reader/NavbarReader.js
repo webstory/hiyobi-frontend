@@ -7,14 +7,8 @@ import {
   Nav,
   NavItem,
   NavLink,
-  UncontrolledDropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
 } from "reactstrap";
 import { NavLink as RRNavLink } from "react-router-dom";
-import Login from "../modal/Login";
-import ModalPortal from "../modal/ModalPortal";
 
 const MainNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);

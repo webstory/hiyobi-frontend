@@ -1,29 +1,15 @@
 import React, { useState, useEffect } from "react";
-import {
-  Container,
-  Navbar,
-  NavbarBrand,
-  NavbarToggler,
-  Collapse,
-  Nav,
-  NavItem,
-  NavLink,
-} from "reactstrap";
 import Loading from "../components/reader/Loading";
 import LoadProgress from "../components/reader/LoadProgress";
-import { setBookmark } from "../lib/User";
 import styled, { css } from "styled-components";
 import { CDNURL } from "../lib/Constants";
 import { apifetch, jsonfetch } from "../lib/Fetch";
-import { useParams, NavLink as RRNavLink } from "react-router-dom";
-import Fullscreen from "react-full-screen";
+import { useParams } from "react-router-dom";
 import Helmet from "react-helmet";
 import Cookie from "js-cookie";
 import { useCallback } from "react";
 import ReaderOverlay from "../components/reader/ReaderOverlay";
-import { isMobile } from "react-device-detect";
 import FullScreen from "react-full-screen";
-import GalleryComment from "../components/gallery/GalleryComment";
 
 const Reader = () => {
   let c_imgfit = Cookie.get("imgfit");
@@ -55,7 +41,6 @@ const Reader = () => {
   const { readid } = useParams();
   const [isLoading, setLoading] = useState(true);
   const [loadText, setLoadText] = useState("로딩중...");
-  const [navCollapse, setNavCollapse] = useState(false);
   const [gallJson, setGallJson] = useState();
   const [gallListJson, setGallListJson] = useState();
   const [imgFit, setImgFit] = useState(c_imgfit);
@@ -68,7 +53,6 @@ const Reader = () => {
   const [isOverlayOpen, setOverlayOpen] = useState(true);
   const [isFull, setFull] = useState(false);
   const [lastScrollTop, setLastScrollTop] = useState(0);
-  const [imgList, setImgList] = useState();
   const [commentOpen, setCommentOpen] = useState(false);
 
   const toggleImgFit = () => {
@@ -99,16 +83,10 @@ const Reader = () => {
   const toggleSpread = () => {
     Cookie.set("spread", !spread);
     setSpread(!spread);
-    setImageList();
   };
   const toggleViewMode = () => {
     Cookie.set("viewmode", !viewMode);
     setViewMode(!viewMode);
-    setImageList();
-  };
-
-  const setImageList = () => {
-    viewMode ? setImgList(getScrollImgList()) : setImgList(getPageImgList());
   };
 
   const onArrowKeyDown = useCallback(
@@ -141,14 +119,10 @@ const Reader = () => {
   };
 
   const onLoadError = (i) => {
-    if (window.confirm(i + "번째 이미지 로드 오류. 다시 로드하시겠습니까?")) {
-      setcurrentLoadImg(i - 2);
-    } else {
-      let tmp = [...imgLoaded];
-      tmp[i] = true;
-      setImgLoaded(tmp);
-      setcurrentLoadImg(currentLoadImg + 1);
-    }
+    let tmp = [...imgLoaded];
+    tmp[i] = true;
+    setImgLoaded(tmp);
+    setcurrentLoadImg(currentLoadImg + 1);
   };
 
   const onChangePageSelect = (val) => {
@@ -168,11 +142,7 @@ const Reader = () => {
       return (
         <div key={val}>
           {val.map((i, order) => {
-            let path = `${CDNURL}/data/${readid}/${gallListJson[i].name}`;
-            if (isMobile && imgQuality) {
-              let name = gallListJson[i].name.replace(/\.[^/.]+$/, "");
-              path = `${CDNURL}/data_r/${readid}/${name}.jpg`;
-            }
+            let path = `${CDNURL}/data/${readid}/${gallListJson[i].hash}.webp`;
             let src =
               imgLoaded[i] === true || currentLoadImg === i
                 ? path
@@ -200,11 +170,7 @@ const Reader = () => {
     return (
       <div>
         {group.map((i, order) => {
-          let path = `${CDNURL}/data/${readid}/${gallListJson[i].name}`;
-          if (isMobile && imgQuality) {
-            let name = gallListJson[i].name.replace(/\.[^/.]+$/, "");
-            path = `${CDNURL}/data_r/${readid}/${name}.jpg`;
-          }
+          let path = `${CDNURL}/data/${readid}/${gallListJson[i].hash}.webp`;
           let src =
             imgLoaded[i] === true || currentLoadImg === i
               ? path
@@ -370,7 +336,6 @@ const Reader = () => {
           onChangeOpen={onOverlayOpen}
           viewMode={viewMode}
           onClickViewMode={toggleViewMode}
-          spread={spread}
           onClickSpread={toggleSpread}
           imgFit={imgFit}
           onClickImgFit={toggleImgFit}
@@ -401,19 +366,12 @@ const Reader = () => {
                   padding: "0.5rem",
                   backgroundColor: "white",
                 }}
-              >
-                <b>댓글</b>
-                <GalleryComment id={readid} />
-              </ImgArea>
+              ></ImgArea>
             )}
           </FullScreen>
           <div style={{ display: "none" }}>
             {gallListJson.map((val, i) => {
-              let path = `${CDNURL}/data/${readid}/${val.name}`;
-              if (isMobile && imgQuality) {
-                let name = val.name.replace(/\.[^/.]+$/, "");
-                path = `${CDNURL}/data_r/${readid}/${name}.jpg`;
-              }
+              let path = `${CDNURL}/data/${readid}/${val.hash}.webp`;
               let src =
                 imgLoaded[i] === true || currentLoadImg === i ? path : null;
               return (
@@ -471,14 +429,6 @@ const ImgArea = styled.div`
         `;
       }
     }
-    /*
-    else if (props.fit === 'original') {
-      return css `
-        & img {
-          width: 100%;
-        }
-      `
-    }*/
   }}
 
   ${(props) => {
